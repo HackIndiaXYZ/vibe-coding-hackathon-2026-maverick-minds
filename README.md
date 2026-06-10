@@ -1,3 +1,6 @@
+
+
+
 # Ubiquity
 
 > **Cut the leash to Big Tech.**
@@ -7,6 +10,9 @@
 Ubiquity transforms a personal computer into a private cloud node for storage, surveillance, and AI. Instead of uploading data to third-party cloud providers, users retain ownership of their infrastructure, data, and intelligence while still enjoying cloud-like accessibility.
 
 ---
+
+
+<img width="1390" alt="Screenshot 2026-06-10 164231" src="https://github.com/user-attachments/assets/357ffc5c-5430-4380-9750-bff443d3a63e" />
 
 # The Problem
 
@@ -47,6 +53,7 @@ No dependency on third-party cloud providers.
 No surprise outages beyond your own infrastructure.
 
 ---
+<img width="1378" height="851" alt="Screenshot 2026-06-10 160549" src="https://github.com/user-attachments/assets/9bf3b5e1-91db-4ab1-b5f5-a100863998d1" />
 
 ## Local-First Storage
 
@@ -72,6 +79,7 @@ Use local models for:
 Your data never needs to leave your environment for AI processing.
 
 ---
+<img width="401" height="863" alt="Screenshot 2026-06-10 160434" src="https://github.com/user-attachments/assets/4f5fda51-d6e3-4f3d-8f0e-671867fd4739" />
 
 ## Secure Remote Access
 
@@ -97,6 +105,9 @@ You decide when the node becomes reachable.
 5. Files and videos stream directly from the owner's machine.
 6. Remote access can be enabled whenever needed through secure networking.
 7. Access can be revoked instantly by disabling routes or rotating credentials.
+
+   <img width="1902" height="958" alt="Screenshot 2026-06-10 163812" src="https://github.com/user-attachments/assets/828eb6fa-3095-4b58-8cb8-f44e5f955ed8" />
+
 
 Throughout the entire workflow, storage, intelligence, and access remain under the user's control.
 
@@ -185,6 +196,9 @@ For remote access, users can connect through:
 * Tailscale Funnel
 * Cloudflare Tunnel
 * Self-managed reverse proxies
+
+  
+<img width="1383" height="880" alt="Screenshot 2026-06-10 164211" src="https://github.com/user-attachments/assets/f065822a-f1a6-4384-ad16-b86a3be0abf5" />
 
 The Electron node exposes a lightweight HTTP API that can be securely routed through these networking solutions.
 
