@@ -1,0 +1,53 @@
+{
+  "name": "local-cloud-infrastructure",
+  "version": "1.0.0",
+  "description": "Secure local-cloud desktop app — Vite + React + Electron",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k -n VITE,BUILD-EL,ELECTRON -c cyan,blue,yellow \"vite\" \"tsc -p tsconfig.electron.json --watch\" \"wait-on http://localhost:5173 && wait-on electron/main.js && electron .\"",
+    "build": "tsc -p tsconfig.electron.json && vite build",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "build:renderer": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "typecheck:electron": "tsc -p tsconfig.electron.json --noEmit"
+  },
+  "dependencies": {
+    "@types/qrcode": "^1.5.6",
+    "dotenv": "^16.4.5",
+    "pg": "^8.11.5",
+    "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/pg": "^8.11.6",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.1",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.localcloud.infrastructure",
+    "productName": "Local Cloud Infrastructure",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*.js",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    }
+  }
+}

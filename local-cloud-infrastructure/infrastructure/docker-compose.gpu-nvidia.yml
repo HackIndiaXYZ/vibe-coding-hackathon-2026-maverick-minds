@@ -1,0 +1,42 @@
+# Standalone NVIDIA GPU stack (postgres + Ollama with GPU).
+# Requires NVIDIA Container Toolkit.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: localcloud-postgres
+    environment:
+      POSTGRES_DB: localcloud_db
+      POSTGRES_USER: localcloud
+      POSTGRES_PASSWORD: changeme_before_use
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: localcloud-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+    driver: local
+  ollama_data:
+    driver: local

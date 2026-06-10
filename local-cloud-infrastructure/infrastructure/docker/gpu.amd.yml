@@ -1,0 +1,14 @@
+# AMD ROCm GPU overlay for Ollama.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker/gpu.amd.yml
+# Set RENDER_GID to your host render group id: getent group render | cut -d: -f3
+# Requires ROCm drivers (kfd + DRI). Host user must be in video and render groups.
+
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - video
+      - ${RENDER_GID:-render}

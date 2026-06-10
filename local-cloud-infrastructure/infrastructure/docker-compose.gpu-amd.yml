@@ -1,0 +1,38 @@
+# Standalone AMD ROCm GPU stack (postgres + Ollama with ROCm).
+# Requires ROCm drivers. Set RENDER_GID in .env when needed.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: localcloud-postgres
+    environment:
+      POSTGRES_DB: localcloud_db
+      POSTGRES_USER: localcloud
+      POSTGRES_PASSWORD: changeme_before_use
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: localcloud-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - video
+      - ${RENDER_GID:-render}
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+    driver: local
+  ollama_data:
+    driver: local

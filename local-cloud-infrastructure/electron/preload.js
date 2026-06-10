@@ -1,0 +1,46 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const electron_1 = require("electron");
+electron_1.contextBridge.exposeInMainWorld("api", {
+    getStorageStatus: () => electron_1.ipcRenderer.invoke("req-storage-status"),
+    saveBackupChunk: (buffer) => electron_1.ipcRenderer.invoke("req-save-chunk", buffer),
+    updateAllocation: (bytes) => electron_1.ipcRenderer.invoke("req-update-allocation", bytes),
+    selectFolder: () => electron_1.ipcRenderer.invoke("req-select-folder"),
+    startStream: (cameraId) => electron_1.ipcRenderer.invoke("req-start-stream", { cameraId }),
+    stopStream: (cameraId) => electron_1.ipcRenderer.invoke("req-stop-stream", { cameraId }),
+    runBackup: () => electron_1.ipcRenderer.invoke("req-run-backup"),
+    getBackupStatus: (jobId) => electron_1.ipcRenderer.invoke("req-backup-status", { jobId }),
+    login: (pin) => electron_1.ipcRenderer.invoke("req-login", { pin }),
+    logout: (token) => electron_1.ipcRenderer.invoke("req-logout", { token }),
+    getChatbotStatus: () => electron_1.ipcRenderer.invoke("req-chatbot-status"),
+    sendChatMessage: (message, sessionId, useContext) => electron_1.ipcRenderer.invoke("req-chatbot-send", { message, sessionId, useContext }),
+    getChatHistory: (sessionId) => electron_1.ipcRenderer.invoke("req-chatbot-history", { sessionId }),
+    createChatSession: () => electron_1.ipcRenderer.invoke("req-chatbot-new-session"),
+    updateChatbotConfig: (updates) => electron_1.ipcRenderer.invoke("req-chatbot-config", updates),
+    listContextFiles: () => electron_1.ipcRenderer.invoke("req-chatbot-context-list"),
+    addContextFile: (relativePath) => electron_1.ipcRenderer.invoke("req-chatbot-context-add", { relativePath }),
+    addContextDirectory: (relativeDir) => electron_1.ipcRenderer.invoke("req-chatbot-context-add-dir", { relativeDir }),
+    removeContextFile: (fileId) => electron_1.ipcRenderer.invoke("req-chatbot-context-remove", { fileId }),
+    addContextDockerFiles: () => electron_1.ipcRenderer.invoke("req-chatbot-context-docker"),
+    startDockerOllama: (profile) => electron_1.ipcRenderer.invoke("req-docker-start", { profile }),
+    stopDockerOllama: () => electron_1.ipcRenderer.invoke("req-docker-stop"),
+    pullDockerModel: (model) => electron_1.ipcRenderer.invoke("req-docker-pull-model", { model }),
+    // File Management
+    listFiles: () => electron_1.ipcRenderer.invoke("req-list-files"),
+    uploadFile: (buffer, fileName) => electron_1.ipcRenderer.invoke("req-upload-file", { buffer, fileName }),
+    deleteFile: (fileId) => electron_1.ipcRenderer.invoke("req-delete-file", { fileId }),
+    downloadFile: (filePath) => electron_1.ipcRenderer.invoke("req-download-file", { filePath }),
+});
+electron_1.contextBridge.exposeInMainWorld("vpn", {
+    checkInstalled: () => electron_1.ipcRenderer.invoke('vpn:check-installed'),
+    initServer: (endpoint, port) => electron_1.ipcRenderer.invoke('vpn:init-server', endpoint, port),
+    addPeer: (name) => electron_1.ipcRenderer.invoke('vpn:add-peer', name),
+    listPeers: () => electron_1.ipcRenderer.invoke('vpn:list-peers'),
+    removePeer: (publicKey) => electron_1.ipcRenderer.invoke('vpn:remove-peer', publicKey),
+    serverMeta: () => electron_1.ipcRenderer.invoke('vpn:server-meta'),
+    start: () => electron_1.ipcRenderer.invoke('vpn:start'),
+    stop: () => electron_1.ipcRenderer.invoke('vpn:stop'),
+    status: () => electron_1.ipcRenderer.invoke('vpn:status'),
+    peerQr: (publicKey) => electron_1.ipcRenderer.invoke('vpn:peer-qr', publicKey),
+    saveConfigFile: (clientConf, fileName) => electron_1.ipcRenderer.invoke('vpn:save-config-file', { clientConf, fileName }),
+});

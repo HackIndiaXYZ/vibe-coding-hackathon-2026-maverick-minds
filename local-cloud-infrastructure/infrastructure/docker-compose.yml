@@ -1,0 +1,44 @@
+# Base stack: PostgreSQL + Ollama (CPU).
+# GPU overlays: docker/gpu.nvidia.yml or docker/gpu.amd.yml
+# Standalone GPU stacks: docker-compose.gpu-nvidia.yml / docker-compose.gpu-amd.yml
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: localcloud-postgres
+    environment:
+      POSTGRES_DB: localcloud_db
+      POSTGRES_USER: localcloud
+      POSTGRES_PASSWORD: changeme_before_use
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U localcloud -d localcloud_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: localcloud-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  pgdata:
+    driver: local
+  ollama_data:
+    driver: local
