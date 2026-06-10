@@ -1,77 +1,399 @@
-# vibe-coding-hackathon-2026-maverick-minds
-Hackathon team repository for Maverick Minds - [hackindia-team:vibe-coding-hackathon-2026:maverick-minds]
-Ubiquity — Your Self‑Hosted Freedom Cloud
-=========================================
+# Ubiquity
 
-Tagline
--------
-Cut the leash to Big Tech. Run your own cloud on hardware you control — encrypted, local, and resilient. Ubiquity turns your PC into a private cloud node: storage, AI, and camera capture under your terms.
+> **Cut the leash to Big Tech.**
+>
+> Run your own cloud on hardware you control — encrypted, local, and resilient.
 
-What makes Ubiquity different
------------------------------
-- You own uptime: run the service only when you choose. No vendor lock‑in, no surprise outages, no data-mining.
-- Local-first storage: footage and files live on your machine, encrypted at rest, unlocked only with a password you control.
-- Self-hosted AI: optional local AI services provide on-device intelligence (search, summarization, context) without sending your data to external models.
-- Secure remote access: Tailscale or a small proxy gives secure, deliberate external routes — you decide when to expose the node.
+Ubiquity transforms a personal computer into a private cloud node for storage, surveillance, and AI. Instead of uploading data to third-party cloud providers, users retain ownership of their infrastructure, data, and intelligence while still enjoying cloud-like accessibility.
 
-User story (short)
-------------------
-A remote camera records encrypted clips into the Ubiquity vault. The owner opens the Electron app, types their vault password to unlock a clip, and watches the decrypted stream — streamed directly from their machine. No cloud storage; no third-party indexing. If they want remote viewing, they enable a Tailnet route and share a short-lived token.
+---
 
-Core capabilities
------------------
-- Encrypted vault: AES‑GCM protected files; keys and password stay local.
-- File service: lightweight HTTP API serves metadata and controlled access to decrypted content.
-- Self-hosted AI services: optional indexing and local LLM-based assistant that runs on your machine or local network.
-- Mobile + web clients: thin UIs that request data from your node; the node decides what to reveal.
+# The Problem
 
-How it protects privacy
------------------------
-- Data never leaves your control unless you explicitly permit it. When you enable remote access, the path is secured by Tailscale (peer-to-peer encrypted mesh) or a reverse-proxy you control.
-- The API requires a secret API_KEY; browsers are further gated by CORS. You can rotate keys and revoke access instantly.
-- The vault is password-protected; even if someone gains the storage files, they remain encrypted without the password.
+Modern cloud services provide convenience but require trust.
 
-Routing & remote access (in plain language)
--------------------------------------------
-1. By default, Ubiquity runs locally — the web UI talks to the Electron server on your machine.
-2. For remote access, install Tailscale on the host. You can:
-   - Call the host directly from devices on the same Tailnet (private, encrypted).
-   - Optionally create a Tailscale Service (Funnel) for a public HTTPS endpoint that forwards to your host.
-3. If you don’t use Tailscale, run a tiny reverse-proxy (Cloudflare Tunnel or a small VPS) and forward to the host. Always lock the endpoint with the API key and short-lived tokens.
+Files, camera footage, and AI interactions are often stored and processed on infrastructure owned by third parties. Users have limited control over privacy, outages, pricing changes, and data handling practices.
 
-Operational choices you control
---------------------------------
-- Uptime: run 24/7 on a server, or only when you need it on a laptop.
-- Exposure: private only, Tailnet-only, or publicly reachable via a proxy.
-- Intelligence: run AI models locally for privacy, or disable the chatbot service if you prefer.
+As AI becomes increasingly integrated into everyday life, users need an alternative that preserves ownership without sacrificing functionality.
 
-Getting going (essentials)
---------------------------
-- Run the desktop app (Electron). It will create a vault and a surveillance folder.
-- Set a strong vault password — this protects all footage.
-- Generate a long API key and set it on the host (Admin PowerShell):
-  setx API_KEY "<strong-random-key>" /M
-- Start the app and check the embedded API is listening (netstat).
-- For remote access: install Tailscale and configure a Service or use a proxy.
+---
 
-Quick commands (copy/paste)
----------------------------
-# Generate a strong key (PowerShell)
-$bytes = New-Object Byte[] 32; [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes); [Convert]::ToBase64String($bytes)
+# Our Solution
 
-# Persist key (Admin PowerShell)
-setx API_KEY "<paste-key-here>" /M
+Ubiquity creates a self-hosted cloud environment using hardware users already own.
 
-# Allow inbound if you will accept remote connections
-New-NetFirewallRule -DisplayName "Ubiquity API" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 8081 -Profile Any
+The platform combines:
 
-Safety & tips
--------------
-- Treat the API key like a capability token: rotate it if leaked.
-- Use FRONTEND_ORIGIN to limit which web origins can access your API.
-- Keep your vault password secret and never check it into code.
+* Encrypted local storage
+* Surveillance recording
+* Self-hosted AI services
+* Secure remote access
+* Web and mobile clients
 
-Why this matters
------------------
-Running your own cloud is an act of digital self-determination. Ubiquity takes systems you already have (storage, camera, CPU) and stitches them into a private, secure platform. You decide the availability, the privacy posture, and how intelligence runs against your data.
+Everything remains under user control while providing the accessibility and convenience expected from modern cloud platforms.
 
+---
+
+# What Makes Ubiquity Different?
+
+## You Own Uptime
+
+Run the service only when you choose.
+
+No vendor lock-in.
+
+No dependency on third-party cloud providers.
+
+No surprise outages beyond your own infrastructure.
+
+---
+
+## Local-First Storage
+
+Files and recordings remain on your machine.
+
+Content is encrypted at rest and protected by credentials you control.
+
+Storage stays under your ownership instead of being transferred to third-party cloud infrastructure.
+
+---
+
+## Self-Hosted AI
+
+Optional AI services run directly on your hardware.
+
+Use local models for:
+
+* Search
+* Summarization
+* Context retrieval
+* Knowledge assistance
+
+Your data never needs to leave your environment for AI processing.
+
+---
+
+## Secure Remote Access
+
+Access your node from anywhere while maintaining ownership and control.
+
+Remote connectivity can be configured through:
+
+* Tailscale Tailnet
+* Tailscale Funnel
+* Cloudflare Tunnel
+* Self-managed reverse proxies
+
+You decide when the node becomes reachable.
+
+---
+
+# Workflow
+
+1. A camera records footage or a user uploads files.
+2. Ubiquity encrypts the content and stores it inside the local vault.
+3. Optional AI services index, search, and summarize content locally.
+4. The owner opens Ubiquity and unlocks the vault using their password.
+5. Files and videos stream directly from the owner's machine.
+6. Remote access can be enabled whenever needed through secure networking.
+7. Access can be revoked instantly by disabling routes or rotating credentials.
+
+Throughout the entire workflow, storage, intelligence, and access remain under the user's control.
+
+---
+
+# Core Capabilities
+
+## Encrypted Vault
+
+AES-GCM protected storage with locally managed credentials.
+
+Passwords and encryption keys remain under user control.
+
+---
+
+## File Service
+
+A lightweight HTTP API serves metadata and controlled access to authorized content.
+
+---
+
+## Self-Hosted AI Services
+
+Optional local AI assistants can run on the host machine or local network.
+
+Capabilities include:
+
+* Semantic search
+* Summarization
+* Context retrieval
+* Knowledge assistance
+
+---
+
+## Surveillance Storage
+
+Camera footage is stored directly on hardware owned by the user rather than third-party cloud providers.
+
+---
+
+## Mobile & Web Access
+
+Cross-platform clients connect to the node and request information while respecting authentication and access controls.
+
+---
+
+# System Architecture
+
+Ubiquity consists of three primary components.
+
+## Desktop Node (Electron)
+
+The Electron application serves as the core of the platform.
+
+Responsibilities include:
+
+* Vault management
+* Encryption and decryption
+* Surveillance storage
+* Local AI services
+* Embedded HTTP API
+
+---
+
+## Web Client (React + Vite)
+
+Provides browser-based access to the node.
+
+Supports local and remote connectivity.
+
+---
+
+## Mobile Client (Expo / React Native)
+
+Provides mobile monitoring and lightweight interactions using the same backend services.
+
+---
+
+# Remote Access & Routing
+
+By default, Ubiquity operates entirely on the local machine.
+
+For remote access, users can connect through:
+
+* Tailscale Tailnet
+* Tailscale Funnel
+* Cloudflare Tunnel
+* Self-managed reverse proxies
+
+The Electron node exposes a lightweight HTTP API that can be securely routed through these networking solutions.
+
+Requests are authenticated using API keys and protected through configurable origin restrictions.
+
+---
+
+## Development Routing
+
+Developers can run:
+
+* Web Client locally
+* Electron Node locally
+* Mobile Client locally
+
+When an API base URL is not provided, clients can fall back to configured host IP and port settings.
+
+For remote development, both devices can communicate securely through a shared Tailnet.
+
+---
+
+# Privacy & Security
+
+Privacy is a foundational design principle.
+
+## Local Ownership
+
+Data remains under user control unless explicitly shared.
+
+---
+
+## Encryption
+
+Files are protected using AES-GCM encryption.
+
+Stored content remains unreadable without authorization.
+
+---
+
+## Authentication
+
+API requests require valid API keys.
+
+Keys can be rotated or revoked whenever necessary.
+
+---
+
+## Origin Protection
+
+Configurable CORS restrictions help prevent unauthorized browser access.
+
+---
+
+## Revocable Access
+
+Remote access can be disabled instantly.
+
+Credentials can be regenerated whenever exposure is suspected.
+
+---
+
+## Vault Protection
+
+Even if encrypted files are copied, they remain inaccessible without the correct vault password.
+
+---
+
+# Technology Stack
+
+## Frontend
+
+* React
+* Vite
+* Electron
+* React Native
+
+## Backend
+
+* Node.js
+* Lightweight HTTP Server
+
+## Security
+
+* AES-GCM Encryption
+* API Key Authentication
+* CORS Protection
+
+## Networking
+
+* Tailscale
+* Tailscale Funnel
+* Cloudflare Tunnel
+* Reverse Proxy Support
+
+## AI
+
+* Local LLM Integration
+* Self-Hosted AI Services
+
+---
+
+# Environment Variables
+
+## Electron Host
+
+```env
+API_KEY=your_secure_api_key
+FRONTEND_ORIGIN=https://your-frontend-url.com
+PORT=8081
+```
+
+## Web Client
+
+```env
+VITE_API_BASE=https://your-api-url
+VITE_API_KEY=your_client_api_key
+```
+
+> Note: VITE variables are exposed to the client bundle and should not be treated as secrets.
+
+
+---
+
+# Useful Commands
+
+## Generate a Strong API Key (PowerShell)
+
+```powershell
+$bytes = New-Object Byte[] 32
+[System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+[Convert]::ToBase64String($bytes)
+```
+
+## Persist API Key (Admin PowerShell)
+
+```powershell
+setx API_KEY "<YOUR_API_KEY>" /M
+```
+
+## Allow Incoming Connections
+
+```powershell
+New-NetFirewallRule -DisplayName "Ubiquity API 8081" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 8081 -Profile Any
+```
+
+---
+
+# Troubleshooting
+
+## API Returns 401 Unauthorized
+
+Verify that the API key configured on the host matches the key used by the client or proxy.
+
+---
+
+## Remote Access Timeout
+
+Check:
+
+* Tailscale status
+* Service/Funnel configuration
+* Firewall rules
+* Listening port
+
+---
+
+## Frontend Uses Incorrect Host
+
+Clear stored host settings and reload the application.
+
+---
+
+## Verify API Availability
+
+```bash
+curl http://<HOST_IP>:8081/health
+```
+
+---
+
+# Security Recommendations
+
+* Use strong randomly generated API keys.
+* Rotate credentials periodically.
+* Restrict allowed frontend origins.
+* Protect vault passwords.
+* Avoid exposing sensitive endpoints publicly.
+* Prefer server-side proxies when handling secrets.
+
+---
+
+# Future Roadmap
+
+* Authenticated media streaming with short-lived tokens
+* Server-side proxy authentication
+* Advanced AI retrieval pipelines
+* Hardened networking policies
+* Distributed private cloud nodes
+* Multi-device synchronization
+* Enhanced surveillance analytics
+
+---
+
+# Why This Matters
+
+Running your own cloud is an act of digital self-determination.
+
+Ubiquity demonstrates that storage, surveillance, and AI can remain private, secure, and user-controlled while still delivering the convenience users expect from modern cloud platforms.
+
+Instead of renting privacy from a provider, users own the infrastructure, intelligence, and data that power their digital lives.
+
+## Your Hardware. Your Data. Your Cloud.
